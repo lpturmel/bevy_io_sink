@@ -1,0 +1,20 @@
+[package]
+name = "bevy_io_sink"
+version = "0.1.1"
+edition = "2021"
+
+[[example]]
+name = "save_position"
+path = "examples/save_position.rs"
+
+[dependencies]
+async-channel = "2.3.1"
+async-fs = "2.1.2"
+async-std = "1.13.0"
+bevy = { version = "0.16.0", features = ["bevy_log"], default-features = false }
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = "1.0.138"
+
+[dev-dependencies]
+bevy = { version = "0.16.0", features = []}
+bevy-inspector-egui = { version = "0.31.0"}
