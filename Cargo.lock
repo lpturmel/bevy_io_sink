@@ -1008,7 +1008,7 @@ dependencies = [
 
 [[package]]
 name = "bevy_io_sink"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "async-channel 2.3.1",
  "async-fs",
