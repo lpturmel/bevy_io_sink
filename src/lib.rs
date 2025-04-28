@@ -206,6 +206,12 @@ where
             let tx = tx.clone();
             IoTaskPool::get()
                 .spawn(async move {
+                    if let Some(parent) = path.parent() {
+                        if let Err(e) = async_fs::create_dir_all(parent).await {
+                            error!("{e}");
+                            return Ok::<(), io::Error>(());
+                        }
+                    }
                     let mut file = match OpenOptions::new()
                         .create(true)
                         .read(true)
@@ -220,6 +226,16 @@ where
                             return Ok::<(), io::Error>(());
                         }
                     };
+
+                    let metadata = file.metadata().await?;
+                    if metadata.len() == 0 {
+                        let default = R::default();
+                        let json = serde_json::to_vec_pretty(&default)
+                            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+                        file.write_all(&json).await?;
+                        file.flush().await?;
+                        file.seek(SeekFrom::Start(0)).await?;
+                    }
 
                     let mut buf = String::new();
                     if let Err(e) = file.read_to_string(&mut buf).await {
